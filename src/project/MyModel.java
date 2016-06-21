@@ -4,9 +4,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.util.Enumeration;
 
-public class MyModel implements IModel {
+class MyModel implements IModel {
 
-    DefaultTreeModel treeModel;
+    private int failedLinksCount;
+    private int externalLinksCount;
+    private DefaultTreeModel treeModel;
+    private int maxRecursionDepth;
 
     public DefaultTreeModel getTreeModel() {
         return treeModel;
@@ -18,29 +21,72 @@ public class MyModel implements IModel {
 
     @Override
     public DefaultMutableTreeNode tryAddNode(DefaultMutableTreeNode parent, String href) {
+        if (href.isEmpty())
+            return null;
 
         String parentHref = (String) parent.getUserObject();
         DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(href);
 
-        boolean showInsertNewNode = !containsHref((DefaultMutableTreeNode) treeModel.getRoot(), href) &&
-                href.startsWith(parentHref);
-        if (showInsertNewNode) {
+        boolean alreadyInTree = containsHref((DefaultMutableTreeNode) treeModel.getRoot(), href);
+        boolean isNotExternalUrl = href.startsWith(parentHref);
+
+        if (!alreadyInTree) {
             parent.add(newNode);
+        }
+
+        if (isNotExternalUrl) {
             return newNode;
         } else {
-            return null;
+            externalLinksCount++;
         }
+        return null;
+    }
+
+    @Override
+    public void increaseFailedLinksCount() {
+        failedLinksCount++;
+    }
+
+    @Override
+    public void increaseExternalLinksCount() {
+        externalLinksCount++;
     }
 
     private boolean containsHref(DefaultMutableTreeNode root, String href) {
-        @SuppressWarnings("unchecked")
-        Enumeration<DefaultMutableTreeNode> e = root.depthFirstEnumeration();
+
+        Enumeration e = root.depthFirstEnumeration();
         while (e.hasMoreElements()) {
-            DefaultMutableTreeNode node = e.nextElement();
+            Object node = e.nextElement();
             if (node.toString().equalsIgnoreCase(href)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public int getFailedLinksCount() {
+        return failedLinksCount;
+    }
+
+    public void setFailedLinksCount(int failedLinksCount) {
+        this.failedLinksCount = failedLinksCount;
+    }
+
+    public int getExternalLinksCount() {
+        return externalLinksCount;
+    }
+
+    public void setExternalLinksCount(int externalLinksCount) {
+        this.externalLinksCount = externalLinksCount;
+    }
+
+    @Override
+    public void setMaxRecursionDepth(int maxRecursionDepth) {
+        this.maxRecursionDepth = maxRecursionDepth;
+    }
+
+    @Override
+    public int getMaxRecursionDepth() {
+        return maxRecursionDepth;
     }
 }

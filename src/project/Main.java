@@ -4,11 +4,8 @@ import java.awt.*;
 
 public class Main {
 
-    //TODO - save links to file
-    //TODO - nice menu with some options
+    //TODO populate JMenuBar with option to select a destination to save files
     //TODO - beautify the jTree
-    //TODO - some statistics maybe? -- external links?
-
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {

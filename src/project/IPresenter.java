@@ -1,6 +1,6 @@
 package project;
 
-public interface IPresenter {
+interface IPresenter {
     IModel getModel();
 
     void setModel(IModel model);
@@ -11,7 +11,7 @@ public interface IPresenter {
 
     void run();
 
-    void download();
+    void fetch();
 
     void saveLinksToFile();
 }

@@ -1,6 +1,6 @@
 package project;
 
-public interface IView {
+interface IView {
     IPresenter getPresenter();
 
     void setPresenter(IPresenter presenter);
@@ -20,4 +20,8 @@ public interface IView {
     void disableFetchButton();
 
     void enableFetchButton();
+
+    void disableSaveLinksButton();
+
+    void enableSaveLinkButton();
 }
