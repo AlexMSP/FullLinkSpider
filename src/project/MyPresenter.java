@@ -65,7 +65,7 @@ class MyPresenter implements IPresenter {
 
         view.disableFetchButton();
         SwingUtilities.invokeLater(() -> {
-            fetchRecursive(root, siteURL, 0, 3);
+            fetchRecursive(root, siteURL, 0, getModel().getMaxRecursionDepth());
             view.expandTree();
             view.updateViewFromModel();
             JOptionPane.showMessageDialog(null, "Finished retrieving links!");
@@ -79,8 +79,7 @@ class MyPresenter implements IPresenter {
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) (model.getTreeModel().getRoot());
         Enumeration e = root.depthFirstEnumeration();
         try {
-
-            File file = new File("exports.txt");
+            File file = new File(getModel().getSaveLocation() + "/" + "exports.txt");
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
 
             while (e.hasMoreElements()) {
@@ -97,8 +96,9 @@ class MyPresenter implements IPresenter {
             if (dialogResult == JOptionPane.YES_OPTION) {
                 Desktop desktop = Desktop.getDesktop();
                 desktop.open(file);
+            } else {
+                JOptionPane.showMessageDialog(null, "Links saved.", "Saved", JOptionPane.INFORMATION_MESSAGE);
             }
-
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "Something went wrong with export.txt."
                             + ex.getMessage(), "Exporting error...",

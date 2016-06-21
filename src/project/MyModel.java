@@ -2,6 +2,7 @@ package project;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import java.io.File;
 import java.util.Enumeration;
 
 class MyModel implements IModel {
@@ -10,6 +11,11 @@ class MyModel implements IModel {
     private int externalLinksCount;
     private DefaultTreeModel treeModel;
     private int maxRecursionDepth;
+    private File saveLocation;
+
+    MyModel() {
+        maxRecursionDepth = 3;
+    }
 
     public DefaultTreeModel getTreeModel() {
         return treeModel;
@@ -88,5 +94,13 @@ class MyModel implements IModel {
     @Override
     public int getMaxRecursionDepth() {
         return maxRecursionDepth;
+    }
+
+    public File getSaveLocation() {
+        return saveLocation;
+    }
+
+    public void setSaveLocation(File saveLocation) {
+        this.saveLocation = saveLocation;
     }
 }

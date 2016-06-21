@@ -2,6 +2,7 @@ package project;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import java.io.File;
 
 interface IModel {
     DefaultTreeModel getTreeModel();
@@ -25,4 +26,8 @@ interface IModel {
     void setMaxRecursionDepth(int maxRecursionDepth);
 
     int getMaxRecursionDepth();
+
+    File getSaveLocation();
+
+    void setSaveLocation(File saveLocation);
 }
