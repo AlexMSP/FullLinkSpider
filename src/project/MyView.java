@@ -1,6 +1,8 @@
 package project;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
@@ -33,6 +35,8 @@ class MyView extends JFrame implements IView {
      * draws and initializes GUI components
      */
     private void initComponents() {
+        setTitle("Full Link Spider Application");
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("spider.png")));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new FlowLayout());
 
@@ -45,6 +49,7 @@ class MyView extends JFrame implements IView {
 
         jTree = new JTree();
         jTree.setModel(null);
+        jTree.setCellRenderer(new MyTreeCellRenderer());
         jTree.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 int selRow = jTree.getRowForLocation(e.getX(), e.getY());
@@ -77,12 +82,27 @@ class MyView extends JFrame implements IView {
         jClose.addActionListener(e -> this.close());
         jFile.add(jClose);
         JMenu jSettings = new JMenu("Settings");
+        JMenuItem jChooseSaveLocation = new JMenuItem("Choose save location...");
+
+        jChooseSaveLocation.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setCurrentDirectory(null);
+            chooser.setDialogTitle("Where to save the export file?");
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.setAcceptAllFileFilterUsed(false);
+
+            if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                getPresenter().getModel().setSaveLocation(chooser.getSelectedFile());
+            }
+        });
+
         JMenuItem jChooseDepth = new JMenuItem("Choose recursive depth...");
         jChooseDepth.addActionListener(e -> {
-            String depth = JOptionPane.showInputDialog(null,"What should be the depth of the search?");
+            String depth = JOptionPane.showInputDialog(null, "What should be the depth of the search?");
             int maxRecursionDepth = Integer.parseInt(depth);
             getPresenter().getModel().setMaxRecursionDepth(maxRecursionDepth);
         });
+        jSettings.add(jChooseSaveLocation);
         jSettings.add(jChooseDepth);
         JMenu jHelp = new JMenu("Help");
         JMenuItem jAbout = new JMenuItem("About");
@@ -182,5 +202,25 @@ class MyView extends JFrame implements IView {
     @Override
     public void enableSaveLinkButton() {
         jSaveBtn.setEnabled(true);
+    }
+
+
+    private static class MyTreeCellRenderer extends DefaultTreeCellRenderer {
+        @Override
+        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
+                                                      boolean leaf, int row, boolean hasFocus) {
+
+            super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+
+            if (value instanceof DefaultMutableTreeNode) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+                if (node.isLeaf())
+                    setIcon(UIManager.getIcon("FileView.computerIcon"));
+                else
+                    setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("spider.png"))
+                            .getScaledInstance(16, 15, Image.SCALE_SMOOTH)));
+            }
+            return this;
+        }
     }
 }
