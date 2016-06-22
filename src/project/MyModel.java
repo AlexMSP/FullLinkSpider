@@ -38,13 +38,14 @@ class MyModel implements IModel {
 
         if (!alreadyInTree) {
             parent.add(newNode);
-        }
 
-        if (isNotExternalUrl) {
-            return newNode;
-        } else {
-            externalLinksCount++;
+            if (isNotExternalUrl) {
+                return newNode;
+            } else {
+                externalLinksCount++;
+            }
         }
+        
         return null;
     }
 
